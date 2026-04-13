@@ -1,0 +1,19 @@
+# Core system files
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Data files (Don't push large CSVs or Delta files)
+delta_output/
+data_generation/temp_data/
+
+# IDE files
+.vscode/
+.idea/
+.snapshots/
+
+# OS files
+.DS_Store
+Thumbs.db
