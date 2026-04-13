@@ -122,12 +122,12 @@ def run_full_pipeline(
             "status": "SUCCESS",
             "run_id": silver_results["run_id"],
             "orders_count": silver_results["orders_count"],
+            "quarantine_count": silver_results.get("quarantine_count", 0),
             "customers_count": silver_results["customers_count"],
             "products_count": silver_results["products_count"],
         }
         print(f"\n✅ Silver complete: {silver_results['orders_count']} orders, "
-              f"{silver_results['customers_count']} customers, "
-              f"{silver_results['products_count']} products")
+              f"{silver_results.get('quarantine_count', 0)} quarantined")
     except Exception as e:
         results["silver"] = {"status": "FAILED", "error": str(e)}
         print(f"\n❌ Silver FAILED: {e}")
