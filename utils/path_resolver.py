@@ -51,7 +51,9 @@ def _get_base_path() -> str:
     force_local = os.environ.get("FORCE_LOCAL_PATHS", "").lower() == "true"
     
     if _is_databricks() and not force_local:
-        return "/tmp/lakehouse_dq"
+        # DECISION: Use user-private DBFS path. 
+        # Modern Databricks workspaces disable access to the public root /tmp/
+        return "/user/shareitalike@gmail.com/lakehouse_dq"
     else:
         # Local development — use project-relative path
         project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
