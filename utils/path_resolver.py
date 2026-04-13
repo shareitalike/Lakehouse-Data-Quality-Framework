@@ -41,19 +41,19 @@ def _get_base_path() -> str:
     """
     Determine base storage path based on environment.
     
-    # DECISION: Use /tmp/ prefix on Databricks CE because DBFS /tmp/ is
-    # available without workspace configuration. On local, use a relative
-    # path under the project directory for easy cleanup.
+    # DECISION: Use Unity Catalog Volumes on Databricks Serverless because
+    # DBFS is disabled. On local, use a relative path under the project
+    # directory for easy cleanup.
     
-    # TRADEOFF: Could use /mnt/ paths on Databricks, but that requires
-    # mounting external storage — not available on Community Edition.
+    # TRADEOFF: Could use /mnt/ paths on classic clusters, but Unity Catalog
+    # Volumes work on both classic and serverless compute.
     """
     force_local = os.environ.get("FORCE_LOCAL_PATHS", "").lower() == "true"
     
     if _is_databricks() and not force_local:
-        # DECISION: Use user-private DBFS path. 
-        # Modern Databricks workspaces disable access to the public root /tmp/
-        return "/user/shareitalike@gmail.com/lakehouse_dq"
+        # UPDATED FOR SERVERLESS: Use Unity Catalog Volume instead of DBFS
+        # DBFS paths like /tmp/ and /user/ don't work on serverless compute
+        return "/Volumes/dev/default/lakehouse_dq"
     else:
         # Local development — use project-relative path
         project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

@@ -108,11 +108,13 @@ class SilverPipeline:
               f"(removed {initial_count - after_null_filter})")
         
         # Step 2: Parse timestamps
-        # DECISION: Use to_timestamp() which returns null for unparseable values.
-        # Then filter out nulls — malformed timestamps can't be used for analytics.
+        # DECISION: Use try_to_timestamp() for serverless compatibility.
+        # Returns null for unparseable values (e.g., 'NOT_A_DATE') instead of throwing errors.
+        # This is required on Databricks serverless/Photon where to_timestamp() is strict.
+        # Note: Format string must be wrapped in lit() to be treated as a literal, not a column.
         df_clean = df_clean.withColumn(
             "order_timestamp_parsed",
-            F.to_timestamp(F.col("order_timestamp"), "yyyy-MM-dd HH:mm:ss")
+            F.try_to_timestamp(F.col("order_timestamp"), F.lit("yyyy-MM-dd HH:mm:ss"))
         )
         
         # Filter out records with unparseable timestamps
